@@ -28,7 +28,7 @@ private fun Presenter.toJson(): JsonNode = obj("name" of name)
 
 private fun JsonNode.toPresenter() = Presenter(path("name").asText())
 
-private fun JsonNode.optionalNonBlankText() = takeUnless {it.isMissingNode}?.nonBlankText()
+private fun JsonNode.optionalNonBlankText() = takeUnless { it.isMissingNode }?.nonBlankText()
 
 private fun JsonNode.nonBlankText() = asText().let {
     if (it.isNullOrBlank()) throw JsonMappingException(null, "missing or empty text") else it
