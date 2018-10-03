@@ -4,8 +4,6 @@ import com.oneeyedmen.okeydoke.junit.ApprovalsRule
 import learnyouakotlin.part1.Presenter
 import learnyouakotlin.part1.Session
 import learnyouakotlin.part1.Slots
-import learnyouakotlin.part3.JsonFormat.sessionFromJson
-import learnyouakotlin.part3.JsonFormat.sessionToJson
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.IsEqual.equalTo
 import org.junit.Rule
