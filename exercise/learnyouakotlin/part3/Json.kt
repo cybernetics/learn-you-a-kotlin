@@ -1,12 +1,10 @@
 package learnyouakotlin.part3
 
-import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature.INDENT_OUTPUT
 import com.fasterxml.jackson.databind.SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS
 import com.fasterxml.jackson.databind.node.*
-import java.util.stream.Collectors.toList
 
 object Json {
     private val nodes = JsonNodeFactory.instance
@@ -30,24 +28,13 @@ object Json {
         }
     }
 
-    fun obj(vararg props: Pair<String, JsonNode>?): ObjectNode = obj(props.toList())
+    fun obj(vararg props: Pair<String, JsonNode>?) = obj(props.toList())
 
-    fun array(elements: Iterable<JsonNode>): ArrayNode {
-        val array = ArrayNode(nodes)
-        elements.forEach { array.add(it) }
-        return array
+    fun array(elements: Iterable<JsonNode>) = ArrayNode(nodes).apply {
+        elements.forEach { add(it) }
     }
 
-    fun <T> array(elements: List<T>, fn: (T) -> JsonNode): ArrayNode {
-        return array(elements.stream().map(fn).collect(toList()))
-    }
+    fun <T> array(elements: List<T>, fn: (T) -> JsonNode) = array(elements.map(fn))
 
-    fun toStableJsonString(n: JsonNode): String {
-        try {
-            return stableMapper.writeValueAsString(n)
-        } catch (e: JsonProcessingException) {
-            throw IllegalArgumentException("failed to convert JsonNode to JSON string", e)
-        }
-
-    }
+    fun toStableJsonString(n: JsonNode): String = stableMapper.writeValueAsString(n)
 }
