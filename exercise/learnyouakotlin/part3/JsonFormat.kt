@@ -5,9 +5,6 @@ import com.fasterxml.jackson.databind.JsonNode
 import learnyouakotlin.part1.Presenter
 import learnyouakotlin.part1.Session
 import learnyouakotlin.part1.Slots
-import learnyouakotlin.part3.Json.array
-import learnyouakotlin.part3.Json.obj
-import learnyouakotlin.part3.Json.prop
 
 fun sessionToJson(session: Session): JsonNode {
     return obj(
