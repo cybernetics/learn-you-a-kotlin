@@ -17,7 +17,7 @@ fun sessionToJson(session: Session): JsonNode {
             prop("first", session.slots.start),
             prop("last", session.slots.endInclusive)
         )),
-        prop("presenters", array(session.presenters, ::presenterToJson)))
+        prop("presenters", array(session.presenters, Presenter::toJson)))
 }
 
 fun sessionFromJson(json: JsonNode): Session {
@@ -26,17 +26,13 @@ fun sessionFromJson(json: JsonNode): Session {
 
     val authorsNode = json.path("presenters")
     val presenters = authorsNode
-        .map(::presenterFromJson)
+        .map(JsonNode::toPresenter)
     return Session(title, subtitle, Slots(1, 2), presenters)
 }
 
-private fun presenterToJson(p: Presenter): ObjectNode {
-    return obj(prop("name", p.name))
-}
+private fun Presenter.toJson(): ObjectNode = obj(prop("name", name))
 
-private fun presenterFromJson(authorNode: JsonNode): Presenter {
-    return Presenter(authorNode.path("name").asText())
-}
+private fun JsonNode.toPresenter() = Presenter(path("name").asText())
 
 private fun optionalNonBlankText(node: JsonNode): String? {
     return if (node.isMissingNode) {
