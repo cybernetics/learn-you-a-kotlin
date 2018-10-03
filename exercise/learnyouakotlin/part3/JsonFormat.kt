@@ -35,11 +35,7 @@ private fun Presenter.toJson(): ObjectNode = obj(prop("name", name))
 private fun JsonNode.toPresenter() = Presenter(path("name").asText())
 
 private fun optionalNonBlankText(node: JsonNode): String? {
-    return if (node.isMissingNode) {
-        null
-    } else {
-        nonBlankText(node)
-    }
+    return node.takeUnless {it.isMissingNode}?.let { nonBlankText(it) }
 }
 
 private fun nonBlankText(node: JsonNode): String {
