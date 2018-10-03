@@ -6,37 +6,30 @@ import learnyouakotlin.part1.Presenter
 import learnyouakotlin.part1.Session
 import learnyouakotlin.part1.Slots
 
-fun sessionToJson(session: Session): JsonNode {
-    return obj(
-        prop("title", session.title),
-        if (session.subtitle == null) null else prop("subtitle", session.subtitle),
-        prop(
-            "slots", obj(
-            prop("first", session.slots.start),
-            prop("last", session.slots.endInclusive)
-        )),
-        prop("presenters", array(session.presenters, Presenter::toJson)))
-}
+fun Session.toJson() =
+    obj(
+        "title" of title,
+        if (subtitle == null) null else "subtitle" of subtitle,
+        "slots" of obj(
+            "first" of slots.start,
+            "last" of slots.endInclusive
+        ),
+        "presenters" of array(presenters, Presenter::toJson))
 
-fun sessionFromJson(json: JsonNode): Session {
-    val title = nonBlankText(json.path("title"))
-    val subtitle = optionalNonBlankText(json.path("subtitle"))
 
-    val authorsNode = json.path("presenters")
-    val presenters = authorsNode
-        .map(JsonNode::toPresenter)
-    return Session(title, subtitle, Slots(1, 2), presenters)
-}
+fun JsonNode.toSession() =
+    Session(
+        title = path("title").nonBlankText(),
+        subtitle = path("subtitle").optionalNonBlankText(),
+        slots = Slots(1, 2),
+        presenters = path("presenters").map(JsonNode::toPresenter))
 
-private fun Presenter.toJson(): JsonNode = obj(prop("name", name))
+private fun Presenter.toJson(): JsonNode = obj("name" of name)
 
 private fun JsonNode.toPresenter() = Presenter(path("name").asText())
 
-private fun optionalNonBlankText(node: JsonNode): String? {
-    return node.takeUnless {it.isMissingNode}?.let { nonBlankText(it) }
-}
+private fun JsonNode.optionalNonBlankText() = takeUnless {it.isMissingNode}?.nonBlankText()
 
-private fun nonBlankText(node: JsonNode): String {
-    val text = node.asText()
-    return if (node.isNull || text == "") throw JsonMappingException(null, "missing or empty text") else text
+private fun JsonNode.nonBlankText() = asText().let {
+    if (it.isNullOrBlank()) throw JsonMappingException(null, "missing or empty text") else it
 }

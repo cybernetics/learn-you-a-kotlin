@@ -9,11 +9,13 @@ import com.fasterxml.jackson.databind.node.*
 private val nodes = JsonNodeFactory.instance
 private val stableMapper = ObjectMapper().enable(INDENT_OUTPUT, ORDER_MAP_ENTRIES_BY_KEYS)
 
-fun prop(name: String, textValue: String) = prop(name, TextNode(textValue))
 
-fun prop(name: String, intValue: Int) = prop(name, IntNode(intValue))
 
-fun prop(name: String, value: JsonNode) = Pair(name, value)
+infix fun String.of(textValue: String) = this.of(TextNode(textValue))
+
+infix fun String.of(intValue: Int) = this.of(IntNode(intValue))
+
+infix fun String.of(value: JsonNode) = this to value
 
 fun obj(props: Iterable<Pair<String, JsonNode>?>) = ObjectNode(nodes).apply {
     props.filterNotNull().forEach {

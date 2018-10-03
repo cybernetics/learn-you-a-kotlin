@@ -23,7 +23,7 @@ class JsonFormatTests {
             Presenter("Duncan McGregor"),
             Presenter("Nat Pryce"))
 
-        val json = sessionToJson(session)
+        val json = session.toJson()
         approval.assertApproved(toStableJsonString(json))
     }
 
@@ -35,7 +35,7 @@ class JsonFormatTests {
             Slots(3, 3),
             Presenter("Ivan Moore"))
 
-        val json = sessionToJson(session)
+        val json = session.toJson()
         approval.assertApproved(toStableJsonString(json))
     }
 
@@ -47,7 +47,7 @@ class JsonFormatTests {
             Presenter("Nat Pryce"),
             Presenter("Duncan McGregor"))
 
-        val parsed = sessionFromJson(sessionToJson(original))
+        val parsed = original.toJson().toSession()
         assertThat(parsed, equalTo(original))
     }
 }
