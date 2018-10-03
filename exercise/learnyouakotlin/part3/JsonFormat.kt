@@ -2,11 +2,12 @@ package learnyouakotlin.part3
 
 import com.fasterxml.jackson.databind.JsonMappingException
 import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.node.ObjectNode
 import learnyouakotlin.part1.Presenter
 import learnyouakotlin.part1.Session
 import learnyouakotlin.part1.Slots
-import learnyouakotlin.part3.Json.*
+import learnyouakotlin.part3.Json.array
+import learnyouakotlin.part3.Json.obj
+import learnyouakotlin.part3.Json.prop
 
 fun sessionToJson(session: Session): JsonNode {
     return obj(
@@ -30,7 +31,7 @@ fun sessionFromJson(json: JsonNode): Session {
     return Session(title, subtitle, Slots(1, 2), presenters)
 }
 
-private fun Presenter.toJson(): ObjectNode = obj(prop("name", name))
+private fun Presenter.toJson(): JsonNode = obj(prop("name", name))
 
 private fun JsonNode.toPresenter() = Presenter(path("name").asText())
 
