@@ -40,9 +40,5 @@ private fun optionalNonBlankText(node: JsonNode): String? {
 
 private fun nonBlankText(node: JsonNode): String {
     val text = node.asText()
-    return if (node.isNull || text == "") {
-        throw JsonMappingException(null, "missing or empty text")
-    } else {
-        text
-    }
+    return if (node.isNull || text == "") throw JsonMappingException(null, "missing or empty text") else text
 }
