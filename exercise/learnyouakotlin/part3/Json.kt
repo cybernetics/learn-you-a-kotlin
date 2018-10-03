@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature.INDENT_OUTPUT
 import com.fasterxml.jackson.databind.SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS
 import com.fasterxml.jackson.databind.node.*
-import java.util.Arrays.asList
 import java.util.stream.Collectors.toList
 
 object Json {
@@ -25,23 +24,13 @@ object Json {
         return Pair(name, value)
     }
 
-    fun obj(props: Iterable<Pair<String, JsonNode>?>): ObjectNode {
-        val `object` = ObjectNode(nodes)
-        props.forEach { p ->
-            // p can be null, but no way to annotate the Map.Entry within the Iterable
-            if (p != null) {
-                `object`.set(p.first, p.second)
-            }
+    fun obj(props: Iterable<Pair<String, JsonNode>?>) = ObjectNode(nodes).apply {
+        props.filterNotNull().forEach {
+            set(it.first, it.second)
         }
-        return `object`
     }
 
-    @SafeVarargs
-    fun obj(vararg props: Pair<String, JsonNode>?): ObjectNode {
-        // Elements of props may be null, but there's no way to use annotations to indicate that. Annotating the
-        // props parameter with @Nullable means that the whole array may be null
-        return obj(asList(*props))
-    }
+    fun obj(vararg props: Pair<String, JsonNode>?): ObjectNode = obj(props.toList())
 
     fun array(elements: Iterable<JsonNode>): ArrayNode {
         val array = ArrayNode(nodes)
