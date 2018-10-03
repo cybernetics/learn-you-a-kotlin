@@ -9,9 +9,6 @@ data class Session(val title: String, val subtitle: String?, val slots: Slots, v
         slots,
         presenters.toList())
 
-    fun withPresenters(newLineUp: List<Presenter>) = copy(presenters = newLineUp)
-
-    fun withTitle(newTitle: String) = copy(title = newTitle)
-
-    fun withSubtitle(newSubtitle: String?) = copy(subtitle = newSubtitle)
 }
+
+fun Session.withPresenters(vararg newLineUp: Presenter) = copy(presenters = newLineUp.toList())
