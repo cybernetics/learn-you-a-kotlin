@@ -7,9 +7,6 @@ import learnyouakotlin.part1.Presenter
 import learnyouakotlin.part1.Session
 import learnyouakotlin.part1.Slots
 import learnyouakotlin.part3.Json.*
-import java.util.*
-import java.util.stream.Collectors
-import java.util.stream.StreamSupport.stream
 
 object JsonFormat {
     fun sessionToJson(session: Session): JsonNode {
@@ -24,22 +21,14 @@ object JsonFormat {
             prop("presenters", array(session.presenters, ::presenterToJson)))
     }
 
-    @Throws(JsonMappingException::class)
     fun sessionFromJson(json: JsonNode): Session {
         val title = nonBlankText(json.path("title"))
         val subtitle = optionalNonBlankText(json.path("subtitle"))
 
         val authorsNode = json.path("presenters")
-        val presenters = stream(spliterator(Iterable { authorsNode.elements() }), false)
-            .map<Presenter>(this::presenterFromJson)
-            .collect(Collectors.toList())
-
+        val presenters =  authorsNode
+            .map(this::presenterFromJson)
         return Session(title, subtitle, Slots(1, 2), presenters)
-
-    }
-
-    private fun spliterator(elements: Iterable<JsonNode>): Spliterator<JsonNode> {
-        return elements.spliterator()
     }
 
     private fun presenterToJson(p: Presenter): ObjectNode {
@@ -50,7 +39,6 @@ object JsonFormat {
         return Presenter(authorNode.path("name").asText())
     }
 
-    @Throws(JsonMappingException::class)
     private fun optionalNonBlankText(node: JsonNode): String? {
         return if (node.isMissingNode) {
             null
@@ -59,7 +47,6 @@ object JsonFormat {
         }
     }
 
-    @Throws(JsonMappingException::class)
     private fun nonBlankText(node: JsonNode): String {
         val text = node.asText()
         return if (node.isNull || text == "") {
